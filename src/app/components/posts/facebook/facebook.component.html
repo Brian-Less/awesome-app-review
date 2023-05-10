@@ -21,7 +21,7 @@
             <!-- Caption-->
             <div class="mb-1">
                 <div class="text-gray-700 min-h-10 px-3 text-sm block break-all whitespace-pre-line">
-                    {{ post.description }}
+                    <div [innerHTML]="post.description | highlight:keywords"></div>
                 </div>
             </div>
 

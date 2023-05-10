@@ -2,44 +2,59 @@ import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { PostService } from "app/services/post.service";
 import Chart from "chart.js";
-import { debounceTime } from "rxjs";
+import { debounceTime, filter } from "rxjs";
 
 @Component({
-  selector: "app-post-chart",
-  templateUrl: "./posts-chart.component.html",
+  selector: "app-word-chart",
+  templateUrl: "./word-chart.component.html",
 })
-export class PostChartComponent implements OnInit {
+export class WordChartComponent implements OnInit {
+  
+  posts = [];
 
   constructor(private _postService: PostService) { }
 
   ngOnInit() { 
+    this._postService.searchText$
+    .pipe(filter((value) => value.length > 0), debounceTime(500))
+    .subscribe((value) => {
 
-  }
-
-
-  ngAfterViewInit() {
-
-    this._postService.posts$.subscribe(posts => {
+      const countArray = this.posts.reduce((acc, post) => {
+        if (post.description.toLowerCase().includes(value.toLowerCase())) {
+          acc.push({
+            author: post.author,
+            count:  (post.description.match(new RegExp(value, "gi")) || []).length
+          });
+          console.log((post.description.match(new RegExp(value, "gi")) || []));
+          
+        }
+        else {
+          acc.push({
+            author: post.author,
+            count:  0
+          });
+        }
+        return acc;
+      }, []);
+      
+      console.log(countArray);
+      
 
       var config = {
-        type: "line",
+        type: "bar",
         data: {
-          labels: [
-            "Comments",
-            "Shares",
-            "Mension"
-          ],
-          datasets: posts.map(post => {
+          labels: ["จำนวน"],
+          datasets: countArray.map(array => {
 
             let color = Math.floor(Math.random() * 16777215).toString(16);
 
             return {
-              label: post.author,
-              data: [post.commentCount, post.shareCount, post.mensionCount],
+              label: array.author,
+              data: [array.count],
               backgroundColor: "#" + color,
               borderColor: "#" + color,
               fill: false
-            };
+            }
           })
 
         },
@@ -109,16 +124,28 @@ export class PostChartComponent implements OnInit {
                   zeroLineBorderDash: [2],
                   zeroLineBorderDashOffset: [2],
                 },
+                
               },
             ],
           },
         },
       };
 
-      let ctx: any = document.getElementById("post-chart") as HTMLCanvasElement;
+      console.log(config);
+      
+      let ctx: any = document.getElementById("word-chart") as HTMLCanvasElement;
       ctx = ctx.getContext("2d");
       new Chart(ctx, config);
 
+    })
+  }
+
+  ngAfterViewInit() {
+
+    this._postService.posts$.subscribe(posts => {
+      this.posts = posts;
     });
   }
+
+
 }

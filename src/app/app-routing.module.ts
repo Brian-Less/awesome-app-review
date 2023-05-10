@@ -21,6 +21,7 @@ import { ProfileComponent } from "./views/profile/profile.component";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
+import { HighlightPipeModule } from "./services/highlightPipe/highlight-pipe.module";
 
 const routes: Routes = [
   // admin views
@@ -57,6 +58,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    HighlightPipeModule,
     RouterModule.forRoot(routes),
   ],
   exports: [RouterModule],

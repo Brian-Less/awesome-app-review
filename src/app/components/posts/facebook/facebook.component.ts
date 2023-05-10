@@ -8,6 +8,8 @@ import { PostService } from "app/services/post.service";
 })
 export class FacebookComponent implements OnInit {
 
+  keywords = "";
+
   posts: any[] = [];
 
   constructor(private _postService: PostService) { }
@@ -17,6 +19,12 @@ export class FacebookComponent implements OnInit {
     this._postService.posts$.subscribe(posts => {
       this.posts = posts;
     });
+
+    this._postService.searchText$.subscribe(keywords => {
+      this.keywords = keywords;
+      
+    }
+    );
 
   }
 

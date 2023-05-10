@@ -6,11 +6,23 @@ import { BehaviorSubject, Observable } from "rxjs";
 })
 export class PostService {
 
+  private _searchText: BehaviorSubject<string> = new BehaviorSubject<string>("");
+
+  get searchText$(): Observable<string>
+  {
+    return this._searchText.asObservable();
+  }
+
+  set searchText(value: string)
+  {
+    this._searchText.next(value);
+  }
+
   private _posts: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([
     {
       author: "John Doe",
       createdTime: "2022-02-14 12:00:00",
-      description: "This is my first post!",
+      description: "This some is my first post! something",
       mensionCount: 52,
       commentCount: 12,
       shareCount: 4,
@@ -20,7 +32,7 @@ export class PostService {
     {
       author: "Jane Smith",
       createdTime: "2022-02-15 09:30:00",
-      description: "Check out this awesome photo I took!",
+      description: "Check out this awesome photo some I took!",
       mensionCount: 812,
       commentCount: 123,
       shareCount: 152,
@@ -30,7 +42,7 @@ export class PostService {
     {
       author: "Bob Johnson",
       createdTime: "2022-02-16 16:45:00",
-      description: "Just finished a great workout!",
+      description: "Just finished a great workout! some",
       mensionCount: 12,
       commentCount: 45,
       shareCount: 38,
